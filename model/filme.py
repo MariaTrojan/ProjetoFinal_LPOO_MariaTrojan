@@ -1,7 +1,7 @@
 class Filme:
-    def __init__(self, id, titulo, genero, ano, quantidade):
-        self.id = id
+    def __init__(self, id_filme, titulo, genero, ano, estoque):
+        self.id_filme = id_filme
         self.titulo = titulo
         self.genero = genero
         self.ano = ano
-        self.quantidade = quantidade
+        self.estoque = estoque
