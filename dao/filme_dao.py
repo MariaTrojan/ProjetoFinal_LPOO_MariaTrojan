@@ -7,7 +7,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from model import filme
 from dao.db_config import DatabaseConfig
 from dao.generic_dao import GenericDAO
-from dao.filme_dao import FilmeDAO
+
 
 class FilmeDAO(GenericDAO):
     
@@ -22,8 +22,8 @@ class FilmeDAO(GenericDAO):
             cursor = self.conexao.cursor()
             query = """
             INSERT INTO tb_filmes
-            (id_filme, filme_titulo, filme_genero, filme_ano, filme_estoque)
-            VALUES (%s, %s, %s, %s, %s)
+            (id_filme, filme_titulo, filme_genero, filme_ano, filme_estoque, filme_valor_locacao)
+            VALUES (%s, %s, %s, %s, %s, %s)
             """
             
             cursor.execute(query, (
@@ -31,7 +31,8 @@ class FilmeDAO(GenericDAO):
                 filme.titulo,
                 filme.genero,
                 filme.ano,
-                filme.estoque
+                filme.estoque,
+                filme.valor_locacao
             ))
             
             self.conexao.commit()
@@ -59,7 +60,8 @@ class FilmeDAO(GenericDAO):
                 filme_titulo,
                 filme_genero,
                 filme_ano,
-                filme_estoque
+                filme_estoque,
+                filme_valor_locacao
             FROM tb_filmes
             """
             cursor.execute(query)
@@ -74,7 +76,8 @@ class FilmeDAO(GenericDAO):
                     titulo=linha[1],
                     genero=linha[2],
                     ano=linha[3],
-                    estoque=linha[4]
+                    estoque=linha[4],
+                    valor_locacao=linha[5]
                 )
 
                 filmes.append(fil)
@@ -99,7 +102,8 @@ class FilmeDAO(GenericDAO):
             query = """UPDATE tb_filmes SET filme_titulo = %s,
                            filme_genero = %s, 
                            filme_ano = %s,
-                           filme_estoque = %s
+                           filme_estoque = %s,
+                           filme_valor_locacao = %s
                        WHERE id_filme = %s"""
             
             cursor.execute(query, (
@@ -107,6 +111,7 @@ class FilmeDAO(GenericDAO):
                 filme.genero,
                 filme.ano,
                 filme.estoque,
+                filme.valor_locacao,
                 id_filme
             ))
             
@@ -156,7 +161,8 @@ class FilmeDAO(GenericDAO):
                 filme_titulo,
                 filme_genero,
                 filme_ano,
-                filme_estoque
+                filme_estoque,
+                filme_valor_locacao
             FROM tb_filmes
             WHERE id_filme = %s
             """
@@ -171,7 +177,8 @@ class FilmeDAO(GenericDAO):
                     titulo=linha[1],
                     genero=linha[2],
                     ano=linha[3],
-                    estoque=linha[4]
+                    estoque=linha[4],
+                    valor_locacao=linha[5]
                 )
                 
                 
@@ -182,6 +189,51 @@ class FilmeDAO(GenericDAO):
         except Exception as e:
             print(f"Erro ao buscar filme: {e}")
         
+        finally:
+            if cursor:
+                cursor.close()
+
+    def buscar_por_nome(self, titulo):
+        if not self.conexao:
+            return []
+
+        try:
+            cursor = self.conexao.cursor()
+
+            query = """
+            SELECT id_filme,
+                filme_titulo,
+                filme_genero,
+                filme_ano,
+                filme_estoque,
+                filme_valor_locacao
+            FROM tb_filmes
+            WHERE LOWER(filme_titulo) LIKE LOWER(%s)
+            """
+
+            cursor.execute(query, (f"%{titulo}%",))
+            linhas = cursor.fetchall()
+
+            filmes = []
+
+            for linha in linhas:
+                fil = filme.Filme(
+                    id_filme=linha[0],
+                    titulo=linha[1],
+                    genero=linha[2],
+                    ano=linha[3],
+                    estoque=linha[4],
+                    valor_locacao=linha[5]
+                )
+
+                filmes.append(fil)
+
+            return filmes
+
+        except Exception as e:
+            print(f"Erro ao buscar filme: {e}")
+            return []
+
         finally:
             if cursor:
                 cursor.close()
