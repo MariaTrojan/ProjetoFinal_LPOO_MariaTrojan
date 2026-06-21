@@ -9,7 +9,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from model.cliente import Cliente
 from dao.db_config import DatabaseConfig
 from dao.generic_dao import GenericDAO
-from dao.cliente_dao import ClienteDAO
 
 class ClienteDAO(GenericDAO):
     
@@ -24,12 +23,11 @@ class ClienteDAO(GenericDAO):
             cursor = self.conexao.cursor()
             query = """
             INSERT INTO tb_clientes
-            (id_cliente, nome, cpf, telefone)
-            VALUES (%s, %s, %s, %s)
+            (nome, cpf, telefone)
+            VALUES (%s, %s, %s)
             """
             
             cursor.execute(query, (
-                cliente.id_cliente,
                 cliente.nome,
                 cliente.cpf,
                 cliente.telefone

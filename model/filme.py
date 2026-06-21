@@ -6,4 +6,3 @@ class Filme:
         self.ano = ano
         self.estoque = estoque
         self.valor_locacao = valor_locacao
-         

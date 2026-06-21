@@ -193,31 +193,24 @@ class FilmeDAO(GenericDAO):
             if cursor:
                 cursor.close()
 
-    def buscar_por_nome(self, titulo):
-        if not self.conexao:
-            return []
+    def buscar_por_nome(self, nome):
 
-        try:
-            cursor = self.conexao.cursor()
+        cursor = self.conexao.cursor()
 
-            query = """
-            SELECT id_filme,
-                filme_titulo,
-                filme_genero,
-                filme_ano,
-                filme_estoque,
-                filme_valor_locacao
-            FROM tb_filmes
-            WHERE LOWER(filme_titulo) LIKE LOWER(%s)
-            """
+        query = """
+        SELECT * FROM tb_filmes
+        WHERE LOWER(filme_titulo) LIKE LOWER(%s)
+        """
 
-            cursor.execute(query, (f"%{titulo}%",))
-            linhas = cursor.fetchall()
+        cursor.execute(query, (f"%{nome}%",))
 
-            filmes = []
+        linhas = cursor.fetchall()
 
-            for linha in linhas:
-                fil = filme.Filme(
+        filmes = []
+
+        for linha in linhas:
+            filmes.append(
+                filme.Filme(
                     id_filme=linha[0],
                     titulo=linha[1],
                     genero=linha[2],
@@ -225,15 +218,6 @@ class FilmeDAO(GenericDAO):
                     estoque=linha[4],
                     valor_locacao=linha[5]
                 )
+            )
 
-                filmes.append(fil)
-
-            return filmes
-
-        except Exception as e:
-            print(f"Erro ao buscar filme: {e}")
-            return []
-
-        finally:
-            if cursor:
-                cursor.close()
+        return filmes

@@ -7,12 +7,11 @@ class ClienteController:
     def __init__(self):
         self.cliente_dao = ClienteDAO()
 
-    def cadastrar_cliente(self, id_cliente, nome, cpf, telefone): #admin
+    def cadastrar_cliente(self, nome, cpf, telefone): #admin
         if not nome or not cpf:
             return False, "Nome e CPF são obrigatórios"
         
         cliente = Cliente(
-            id_cliente=id_cliente,
             nome=nome,
             cpf=cpf,
             telefone=telefone
