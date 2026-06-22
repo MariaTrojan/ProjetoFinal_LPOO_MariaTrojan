@@ -16,7 +16,7 @@ class LocacaoController:
         self.cliente_dao = ClienteDAO()
         
         
-    def criar_locacao(self, id_locacao, id_cliente, id_filme, data_inicio, data_fim=None):
+    def criar_locacao(self, id_cliente, id_filme, data_inicio, data_fim=None):
         if not id_filme or not data_inicio:
             return False, "Preencha os campos obrigatórios"
         
@@ -35,8 +35,7 @@ class LocacaoController:
                 return False, "Filme indisponível no momento"
             
             locacao = Locacao(
-                id_locacao=id_locacao,
-                cliente_id=id_cliente,
+                id_cliente=id_cliente,
                 id_filme=id_filme,
                 data_inicio=data_inicio,
                 data_fim=data_fim,
@@ -66,7 +65,7 @@ class LocacaoController:
                 return False, "Só é possível retirar filmes reservados"
 
             # busca o filme
-            filme = self.filme_dao.buscar_por_id(locacao.filme_id)
+            filme = self.filme_dao.buscar_por_id(locacao.id_filme)
 
             if not filme:
                 return False, "Filme não encontrado"
@@ -95,7 +94,7 @@ class LocacaoController:
             if locacao.status != StatusLocacao.LOCADO:
                 return False, "O filme não está locado"
 
-            filme = self.filme_dao.buscar_por_id(locacao.filme_id)
+            filme = self.filme_dao.buscar_por_id(locacao.id_filme)
 
             if not filme:
                 return False, "Filme não encontrado"
@@ -146,7 +145,7 @@ class LocacaoController:
         
     def ver_detalhes(self, locacao):
         try:
-            filme = self.filme_dao.buscar_por_id(locacao.filme_id)
+            filme = self.filme_dao.buscar_por_id(locacao.id_filme)
 
             if not filme:
                 return "Filme não encontrado"

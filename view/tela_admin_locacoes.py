@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 
 from control.locacao_controller import LocacaoController
+from strategy.calculo_padrao import CalculoPadrao
 
 
 class TelaAdminLocacoes(tk.Toplevel):
@@ -13,6 +14,7 @@ class TelaAdminLocacoes(tk.Toplevel):
         self.geometry("900x450")
 
         self.controller = LocacaoController()
+        self.calculo_strategy = CalculoPadrao()
 
         self.criar_widgets()
         self.carregar_dados()
@@ -26,7 +28,7 @@ class TelaAdminLocacoes(tk.Toplevel):
             font=("Arial", 14)
         ).pack(pady=10)
 
-        colunas = ("ID", "Cliente", "Filme", "Data Início", "Data Fim", "Status")
+        colunas = ("ID", "Cliente", "Filme", "Data Início", "Data Fim", "Status", "Valor Total")
 
         self.tree = ttk.Treeview(
             self,
@@ -58,14 +60,45 @@ class TelaAdminLocacoes(tk.Toplevel):
 
         locacoes = self.controller.listar_locacoes()
 
+        if locacoes is None:
+            locacoes = []
+
         for locacao in locacoes:
+            filme = self.controller.filme_dao.buscar_por_id(locacao.id_filme)
+            nome_filme = filme.titulo if filme else "N/A"
+            valor_filme = filme.valor_locacao if filme else 0
+            
+            cliente = self.controller.cliente_dao.buscar_por_id(locacao.id_cliente)
+            nome_cliente = cliente.nome if cliente else "N/A"
+            
+            # calcular valor total usando a strategy
+            try:
+                from datetime import datetime
+                data_inicio = locacao.data_inicio
+                data_fim = locacao.data_fim
+                
+                if isinstance(data_inicio, str):
+                    data_inicio = datetime.strptime(data_inicio, "%Y-%m-%d").date()
+                if isinstance(data_fim, str):
+                    data_fim = datetime.strptime(data_fim, "%Y-%m-%d").date()
+                
+                dias = (data_fim - data_inicio).days
+                if dias <= 0:
+                    dias = 1
+                
+                # usar strategy para calcular
+                valor_total = self.calculo_strategy.calcular(valor_filme, dias)
+            except:
+                valor_total = 0
+            
             self.tree.insert("", "end", values=(
                 locacao.id,
-                locacao.cliente_id,
-                locacao.filme_id,
+                nome_cliente,
+                nome_filme,
                 locacao.data_inicio,
                 locacao.data_fim,
-                locacao.status.value
+                locacao.status.value,
+                f"R$ {valor_total:.2f}"
             ))
 
 

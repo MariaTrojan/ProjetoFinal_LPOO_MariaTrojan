@@ -2,7 +2,7 @@ import tkinter as tk
 from view.janela_cadastro_locacao import JanelaCadastroLocacao
 from view.tela_cadastro_cliente import TelaCadastroCliente
 from view.filme_list_view import JanelaListagemFilmes
-from view.tela_admin import TelaAdmin
+from view.tela_admin import TelaLoginAdmin
 
 
 def abrir_locacao():
@@ -14,25 +14,46 @@ def abrir_cliente():
     TelaCadastroCliente(nova_janela)
 
 def abrir_filmes():
-    nova_janela = tk.Toplevel(root)
-    JanelaListagemFilmes(nova_janela)
+    JanelaListagemFilmes(root)
 
 def abrir_admin():
-    TelaAdmin(root)
+    TelaLoginAdmin(root)
+
+def sair():
+    root.quit()
 
 
 root = tk.Tk()
 root.title("Locadora de Filmes")
 root.geometry("600x400")
 
-tk.Label(root, text="Sistema Locadora de Filmes", font=("Arial", 14)).pack(pady=20)
+# Criar menu bar
+menu_bar = tk.Menu(root)
+root.config(menu=menu_bar)
 
-tk.Button(root, text="Cadastro Reserva", command=abrir_locacao).pack(pady=10)
+# Menu Cadastro
+menu_cadastro = tk.Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label="Cadastro", menu=menu_cadastro)
+menu_cadastro.add_command(label="Nova Reserva", command=abrir_locacao)
+menu_cadastro.add_command(label="Novo Cliente", command=abrir_cliente)
+menu_cadastro.add_separator()
+menu_cadastro.add_command(label="Sair", command=sair)
 
-tk.Button(root, text="Cadastro Cliente", command=abrir_cliente).pack(pady=10)
+# Menu Filmes
+menu_filmes = tk.Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label="Filmes", menu=menu_filmes)
+menu_filmes.add_command(label="Listar Filmes", command=abrir_filmes)
 
-tk.Button(root, text="Filmes", command=abrir_filmes).pack(pady=10)
+# Menu Admin
+menu_admin = tk.Menu(menu_bar, tearoff=0)
+menu_bar.add_cascade(label="Admin", menu=menu_admin)
+menu_admin.add_command(label="Painel Admin", command=abrir_admin)
 
-tk.Button(root, text="Login Admin", command=abrir_admin).pack(pady=10)
+
+tk.Label(root, text="Sistema Locadora de Filmes", font=("Arial", 16, "bold")).pack(pady=20)
+
+tk.Label(root, text="Bem-vindo ao sistema!", font=("Arial", 12)).pack(pady=10)
+
+tk.Label(root, text="Use o menu acima para navegar", font=("Arial", 10), fg="gray").pack(pady=5)
 
 root.mainloop()

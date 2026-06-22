@@ -179,3 +179,78 @@ class ClienteDAO(GenericDAO):
         finally:
             if cursor:
                 cursor.close()
+
+
+    def buscar_por_nome(self, nome):
+        if not self.conexao:
+            return []
+
+        try:
+            cursor = self.conexao.cursor()
+            query = """
+            SELECT id_cliente,
+                nome,
+                cpf,
+                telefone
+            FROM tb_clientes
+            WHERE nome ILIKE %s
+            """
+            cursor.execute(query, (f"%{nome}%",))
+            linhas = cursor.fetchall()
+
+            clientes = []
+            for linha in linhas:
+                cli = Cliente(
+                    id_cliente=linha[0],
+                    nome=linha[1],
+                    cpf=linha[2],
+                    telefone=linha[3]
+                )
+                clientes.append(cli)
+
+            return clientes
+
+        except Exception as e:
+            print(f"Erro ao buscar clientes por nome: {e}")
+            return []
+
+        finally:
+            if cursor:
+                cursor.close()
+
+
+    def buscar_por_cpf(self, cpf):
+        if not self.conexao:
+            return None
+
+        try:
+            cursor = self.conexao.cursor()
+            query = """
+            SELECT id_cliente,
+                nome,
+                cpf,
+                telefone
+            FROM tb_clientes
+            WHERE cpf = %s
+            """
+            cursor.execute(query, (cpf,))
+            linha = cursor.fetchone()
+
+            if linha:
+                cli = Cliente(
+                    id_cliente=linha[0],
+                    nome=linha[1],
+                    cpf=linha[2],
+                    telefone=linha[3]
+                )
+                return cli
+
+            return None
+
+        except Exception as e:
+            print(f"Erro ao buscar cliente por CPF: {e}")
+            return None
+
+        finally:
+            if cursor:
+                cursor.close()

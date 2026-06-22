@@ -8,11 +8,11 @@ class StatusLocacao(Enum):
     CANCELADO = "cancelado"
 
 class Locacao:
-    def __init__(self, id_locacao, data_inicio, data_fim, cliente_id, id_filme, status):
+    def __init__(self, data_inicio, data_fim, id_cliente, id_filme, status, id_locacao=None):
         self.id = id_locacao
         self.data_inicio = data_inicio
         self.data_fim = data_fim
-        self.cliente_id = cliente_id
+        self.id_cliente = id_cliente
         self.id_filme = id_filme
         self.status = status
 

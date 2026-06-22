@@ -23,13 +23,12 @@ class LocacaoDAO(GenericDAO):
             cursor = self.conexao.cursor()
             query = """
             INSERT INTO tb_locacoes
-            (loc_id, loc_cliente_id, loc_id_filme, loc_data_inicio, loc_data_fim, loc_status)
-            VALUES (%s, %s, %s, %s, %s, %s)
+            (loc_cliente_id, loc_filme_id, loc_data_inicio, loc_data_fim, loc_status)
+            VALUES (%s, %s, %s, %s, %s)
             """
             
             cursor.execute(query, (
-                locacao.id_locacao,
-                locacao.cliente_id,
+                locacao.id_cliente,
                 locacao.id_filme,
                 locacao.data_inicio,
                 locacao.data_fim,
@@ -58,7 +57,7 @@ class LocacaoDAO(GenericDAO):
             query = """
             SELECT loc_id,
                 loc_cliente_id,
-                loc_id_filme,
+                loc_filme_id,
                 loc_data_inicio,
                 loc_data_fim,
                 loc_status
@@ -73,14 +72,14 @@ class LocacaoDAO(GenericDAO):
 
                 loc = Locacao(
                     id_locacao=linha[0],
-                    cliente_id=linha[1],
+                    id_cliente=linha[1],
                     id_filme=linha[2],
                     data_inicio=linha[3],
                     data_fim=linha[4],
                     status=StatusLocacao(linha[5])
                 )
 
-            locacoes.append(loc)
+                locacoes.append(loc)
             
             return locacoes
                                 
@@ -156,7 +155,7 @@ class LocacaoDAO(GenericDAO):
             query = """
             SELECT loc_id,
                 loc_cliente_id,
-                loc_id_filme,
+                loc_filme_id,
                 loc_data_inicio,
                 loc_data_fim,
                 loc_status
@@ -170,12 +169,12 @@ class LocacaoDAO(GenericDAO):
             if linha:
                 
                 loc = Locacao(
-                    id_locacao=linha[0],
-                    cliente_id=linha[1],
-                    id_filme=linha[2],
                     data_inicio=linha[3],
                     data_fim=linha[4],
-                    status=StatusLocacao(linha[5])
+                    id_cliente=linha[1],
+                    id_filme=linha[2],
+                    status=StatusLocacao(linha[5]),
+                    id_locacao=linha[0]
                 )
                 
                 
