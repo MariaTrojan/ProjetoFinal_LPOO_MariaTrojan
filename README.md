@@ -146,4 +146,12 @@ O sistema utiliza PostgreSQL com as seguintes tabelas:
 
 ---
 
+## Declaração de Uso de IA
+- [ ] **Nenhuma IA foi utilizada** na elaboração deste código.
+- [x] **Utilizei IA** como ferramenta de apoio.
+
+- **Ferramenta(s):** ChatGPT
+- **Finalidade:**  
+
+
 
