@@ -68,6 +68,14 @@ Projeto-Locadora/
     └── tela_admin_locacoes.py
 ```
 
+## Padrões de Projeto Utilizados
+* DAO
+* Strategy
+
+O sistema utiliza o padrão DAO (Data Access Object) para a persistência dos dados no PostgreSQL e o padrão Strategy para o cálculo do valor total das locações. 
+O Strategy permite encapsular a lógica de cálculo em uma classe específica, facilitando a manutenção e futuras alterações nas regras de negócio.
+
+
 ---
 
 ## Tecnologias utilizadas

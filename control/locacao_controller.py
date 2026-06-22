@@ -1,14 +1,17 @@
 from dao.cliente_dao import ClienteDAO
 from dao.locacao_dao import LocacaoDAO
 from dao.filme_dao import FilmeDAO
+from model import filme
 from model.locacao import Locacao, StatusLocacao
 from model.filme import Filme
 from datetime import date
+from strategy.calculo_padrao import CalculoPadrao
 
 class LocacaoController:
     
     def __init__(self):
         self.locacao_dao = LocacaoDAO()
+        self.calculo_strategy = CalculoPadrao()
         self.filme_dao = FilmeDAO()
         self.cliente_dao = ClienteDAO()
         
@@ -104,7 +107,12 @@ class LocacaoController:
             if dias <= 0:
                 dias = 1
 
-            valor = dias * filme.valor_locacao
+            estrategia = CalculoPadrao()
+
+            valor = estrategia.calcular(
+                filme.valor_locacao,
+                dias
+            )
 
             filme.estoque += 1
 
@@ -143,13 +151,18 @@ class LocacaoController:
             if not filme:
                 return "Filme não encontrado"
 
-            if locacao.status == StatusLocacao.DEVOLVIDA:
+            if locacao.status == StatusLocacao.DEVOLVIDO:
 
                 dias = (locacao.data_fim - locacao.data_inicio).days
                 if dias <= 0:
                     dias = 1
 
-                valor = locacao.calcular_valor_locacao(filme.valor_locacao)
+                estrategia = CalculoPadrao()
+
+                valor = estrategia.calcular(
+                    filme.valor_locacao,
+                    dias
+                )
 
                 return f"""
         Status: Devolvida
@@ -161,7 +174,15 @@ class LocacaoController:
 
             elif locacao.status in [StatusLocacao.RESERVADO, StatusLocacao.LOCADO]:
 
-                valor = locacao.calcular_valor_locacao(filme.valor_locacao)
+                dias = (locacao.data_fim - locacao.data_inicio).days
+                if dias <= 0:
+                    dias = 1
+
+                estrategia = CalculoPadrao()
+                valor = estrategia.calcular(
+                    filme.valor_locacao,
+                    dias
+                )
 
                 return f"""
         Status: {locacao.status.value}
@@ -170,7 +191,7 @@ class LocacaoController:
         Valor estimado: R$ {valor:.2f}
         """
 
-            elif locacao.status == StatusLocacao.CANCELADA:
+            elif locacao.status == StatusLocacao.CANCELADO:
 
                 return f"""
         Status: Cancelada
