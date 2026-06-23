@@ -41,6 +41,12 @@ class TelaAdminClientes(tk.Toplevel):
 
         tk.Button(
             self,
+            text="Editar Cliente",
+            command=self.editar_cliente
+        ).pack(pady=5)
+
+        tk.Button(
+            self,
             text="Remover Cliente",
             command=self.remover_cliente
         ).pack(pady=5)
@@ -59,6 +65,71 @@ class TelaAdminClientes(tk.Toplevel):
                 cliente.cpf,
                 cliente.telefone
             ))
+
+
+    def editar_cliente(self):
+
+        selecionado = self.tree.selection()
+
+        if not selecionado:
+            messagebox.showerror("Erro", "Selecione um cliente")
+            return
+
+        valores = self.tree.item(selecionado[0])["values"]
+
+        id_cliente = valores[0]
+        cliente = self.controller.buscar_por_id(id_cliente)
+
+        if not cliente:
+            messagebox.showerror("Erro", "Cliente não encontrado")
+            return
+
+        janela_edicao = tk.Toplevel(self)
+        janela_edicao.title("Editar Cliente")
+        janela_edicao.geometry("350x250")
+
+        tk.Label(janela_edicao, text="Nome").pack(pady=5)
+        entry_nome = tk.Entry(janela_edicao)
+        entry_nome.pack()
+        entry_nome.insert(0, cliente.nome)
+
+        tk.Label(janela_edicao, text="CPF").pack(pady=5)
+        entry_cpf = tk.Entry(janela_edicao)
+        entry_cpf.pack()
+        entry_cpf.insert(0, cliente.cpf)
+
+        tk.Label(janela_edicao, text="Telefone").pack(pady=5)
+        entry_telefone = tk.Entry(janela_edicao)
+        entry_telefone.pack()
+        entry_telefone.insert(0, cliente.telefone)
+
+        def salvar_alteracoes():
+            nome = entry_nome.get().strip()
+            cpf = entry_cpf.get().strip()
+            telefone = entry_telefone.get().strip()
+
+            if not nome or not cpf:
+                messagebox.showerror("Erro", "Nome e CPF são obrigatórios")
+                return
+
+            cliente.nome = nome
+            cliente.cpf = cpf
+            cliente.telefone = telefone
+
+            sucesso, msg = self.controller.atualizar_cliente(cliente)
+
+            if sucesso:
+                messagebox.showinfo("Sucesso", msg)
+                janela_edicao.destroy()
+                self.carregar_dados()
+            else:
+                messagebox.showerror("Erro", msg)
+
+        tk.Button(
+            janela_edicao,
+            text="Salvar",
+            command=salvar_alteracoes
+        ).pack(pady=15)
 
 
     def remover_cliente(self):

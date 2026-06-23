@@ -47,7 +47,15 @@ class FilmeController:
         return disponiveis
     
     def buscar_por_nome(self, titulo):
-        return self.filme_dao.buscar_por_nome(titulo)
+        filmes = self.filme_dao.listar_todos()
+
+        encontrados = []
+
+        for filme in filmes:
+            if titulo.lower() in filme.titulo.lower():
+                encontrados.append(filme)
+
+        return encontrados
         
     
     def atualizar_estoque(self, id_filme, quantidade):

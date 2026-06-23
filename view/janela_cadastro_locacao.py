@@ -5,7 +5,7 @@ from control.locacao_controller import LocacaoController
 from control.filme_controller import FilmeController
 from control.cliente_controller import ClienteController
 from strategy.calculo_padrao import CalculoPadrao
-
+from datetime import datetime
 
 class JanelaCadastroLocacao:
 
@@ -35,15 +35,22 @@ class JanelaCadastroLocacao:
         self.entry_filme = tk.Entry(root)
         self.entry_filme.grid(row=2, column=1)
 
-        # evento enquanto digita
+        # enquanto digita
         self.entry_filme.bind("<KeyRelease>", self.filtrar_filmes)
 
-        # lista sugestões
         self.lista_filmes = tk.Listbox(root, height=4)
-        self.lista_filmes.grid(row=3, column=0, columnspan=2, padx=10, sticky="ew")
+        self.lista_filmes.grid(
+            row=3,
+            column=0,
+            columnspan=2,
+            padx=10,
+            sticky="ew"
+        )
 
-        # clique na lista
-        self.lista_filmes.bind("<<ListboxSelect>>", self.selecionar_filme)
+        self.lista_filmes.bind(
+            "<<ListboxSelect>>",
+            self.selecionar_filme
+        )
 
         # DATA INÍCIO
         tk.Label(root, text="Data Início (DD-MM-AAAA)").grid(
@@ -117,7 +124,7 @@ class JanelaCadastroLocacao:
 
         # coloca nome no entry
         self.entry_filme.delete(0, tk.END)
-        self.entry_filme.insert(0, partes[1])
+        self.entry_filme.insert(0, self.filme_selecionado.titulo)
 
         # limpa sugestões
         self.lista_filmes.delete(0, tk.END)
@@ -131,8 +138,15 @@ class JanelaCadastroLocacao:
     def reservar_filme(self):
         try:
             nome_cliente = self.entry_nome.get().strip()
-            data_inicio = self.entry_data_inicio.get().strip()
-            data_fim = self.entry_data_fim.get().strip()
+            data_inicio = datetime.strptime(
+                self.entry_data_inicio.get().strip(),
+                "%d-%m-%Y"
+            ).date()
+
+            data_fim = datetime.strptime(
+                self.entry_data_fim.get().strip(),
+                "%d-%m-%Y"
+            ).date()
 
             if not nome_cliente:
                 messagebox.showerror("Erro", "Informe o nome do cliente")
@@ -194,7 +208,8 @@ class JanelaCadastroLocacao:
             # usar strategy para calcular valor total
             valor_total = self.calculo_strategy.calcular(self.filme_selecionado.valor_locacao, dias)
             self.lbl_valor.config(text=f"R$ {valor_total:.2f}")
-        except:
+        except Exception as e:
+            print(e)
             self.lbl_valor.config(text="R$ 0.00")
 
 

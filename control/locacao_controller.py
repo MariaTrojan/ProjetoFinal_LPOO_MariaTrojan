@@ -1,9 +1,7 @@
 from dao.cliente_dao import ClienteDAO
 from dao.locacao_dao import LocacaoDAO
 from dao.filme_dao import FilmeDAO
-from model import filme
 from model.locacao import Locacao, StatusLocacao
-from model.filme import Filme
 from datetime import date
 from strategy.calculo_padrao import CalculoPadrao
 
@@ -142,64 +140,6 @@ class LocacaoController:
         
         except Exception as e:
             return False, f"Erro ao remover locação: {e}"
-        
-    def ver_detalhes(self, locacao):
-        try:
-            filme = self.filme_dao.buscar_por_id(locacao.id_filme)
-
-            if not filme:
-                return "Filme não encontrado"
-
-            if locacao.status == StatusLocacao.DEVOLVIDO:
-
-                dias = (locacao.data_fim - locacao.data_inicio).days
-                if dias <= 0:
-                    dias = 1
-
-                estrategia = CalculoPadrao()
-
-                valor = estrategia.calcular(
-                    filme.valor_locacao,
-                    dias
-                )
-
-                return f"""
-        Status: Devolvida
-        Início: {locacao.data_inicio}
-        Devolução: {locacao.data_fim}
-        Diárias: {dias}
-        Valor total: R$ {valor:.2f}
-        """
-
-            elif locacao.status in [StatusLocacao.RESERVADO, StatusLocacao.LOCADO]:
-
-                dias = (locacao.data_fim - locacao.data_inicio).days
-                if dias <= 0:
-                    dias = 1
-
-                estrategia = CalculoPadrao()
-                valor = estrategia.calcular(
-                    filme.valor_locacao,
-                    dias
-                )
-
-                return f"""
-        Status: {locacao.status.value}
-        Início: {locacao.data_inicio}
-        Previsão: {locacao.data_fim}
-        Valor estimado: R$ {valor:.2f}
-        """
-
-            elif locacao.status == StatusLocacao.CANCELADO:
-
-                return f"""
-        Status: Cancelada
-        Início: {locacao.data_inicio}
-        (Locação cancelada — sem cobrança)
-        """
-
-        except Exception as e:
-            return f"Erro ao exibir detalhes: {e}"
 
 
         
@@ -217,13 +157,3 @@ class LocacaoController:
     def buscar_por_id(self, id_locacao):
         return self.locacao_dao.buscar_por_id(id_locacao)
     
-    def listar_filmes_disponiveis(self):
-        filmes = self.filme_dao.listar_todos()
-
-        disponiveis = []
-
-        for filme in filmes:
-            if filme.estoque > 0:
-                disponiveis.append(filme)
-
-        return disponiveis
