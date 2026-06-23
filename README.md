@@ -155,7 +155,6 @@ O sistema utiliza PostgreSQL com as seguintes tabelas:
 - [x] **Utilizei IA** como ferramenta de apoio.
 
 - **Ferramenta(s):** ChatGPT
-- **Finalidade:**  
-
+- **Finalidade:**  Foi utilizada como ferramenta de apoio no desenvolvimento do projeto, auxiliando na resolução de dúvidas em Python, integração com banco de dados PostgreSQL, organização da arquitetura MVC, correção de erros no código e implementação de funcionalidades complementares.
 
 
