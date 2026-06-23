@@ -74,3 +74,6 @@ class FilmeController:
 
         return self.filme_dao.atualizar(filme, id_filme)
     
+    def buscar_por_genero(self, genero):
+        return self.filme_dao.buscar_por_genero(genero)
+    

@@ -221,3 +221,39 @@ class FilmeDAO(GenericDAO):
             )
 
         return filmes
+    
+    def buscar_por_genero(self, genero):
+
+        try:
+            cursor = self.conexao.cursor()
+
+            query = """
+            SELECT *
+            FROM tb_filmes
+            WHERE filme_genero = %s
+            """
+
+            cursor.execute(query, (genero,))
+
+            linhas = cursor.fetchall()
+
+            filmes = []
+
+            for linha in linhas:
+
+                filme = filme.Filme(
+                    id_filme=linha[0],
+                    titulo=linha[1],
+                    genero=linha[2],
+                    ano=linha[3],
+                    estoque=linha[4],
+                    valor_locacao=linha[5]
+                )
+
+                filmes.append(filme)
+
+            return filmes
+
+        except Exception as e:
+            print(e)
+            return []

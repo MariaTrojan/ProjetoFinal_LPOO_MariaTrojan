@@ -36,6 +36,31 @@ class JanelaListagemFilmes(tk.Toplevel):
         scrollbar_h = ttk.Scrollbar(frame_tree, orient="horizontal")
         scrollbar_h.pack(side="bottom", fill="x")
 
+        # Filtro por gênero
+        tk.Label(self, text="Filtrar por gênero").pack()
+
+        self.combo_genero = ttk.Combobox(
+            self,
+            values=[
+                "Todos",
+                "Ação",
+                "Comédia",
+                "Terror",
+                "Drama",
+                "Romance",
+                "Anime"
+            ]
+        )
+
+        self.combo_genero.pack(pady=5)
+
+        self.combo_genero.current(0)
+
+        self.combo_genero.bind(
+            "<<ComboboxSelected>>",
+            self.filtrar_genero
+        )
+
         # Treeview (Tabela)
         colunas = ("ID", "Título", "Gênero", "Ano", "Estoque", "Valor Locação")
         self.tree = ttk.Treeview(
@@ -66,22 +91,47 @@ class JanelaListagemFilmes(tk.Toplevel):
         scrollbar_h.config(command=self.tree.xview)
 
     def carregar_dados(self):
+
         self.tree.delete(*self.tree.get_children())
 
         filmes = self.controller.listar_filmes()
 
-        if not filmes:
-            return
+        for filme in filmes:
+
+            valor_formatado = f"R$ {filme.valor_locacao:.2f}"
+
+            status = "Disponível" if filme.estoque > 0 else "Indisponível"
+
+            self.tree.insert("", "end", values=(
+
+                filme.id_filme,
+                filme.titulo,
+                filme.genero,
+                filme.ano,
+                filme.estoque,
+                valor_formatado,
+                status 
+            ))
+
+    def filtrar_genero(self, event):
+
+        genero = self.combo_genero.get()
+
+        self.tree.delete(*self.tree.get_children())
+
+        if genero == "Todos":
+            filmes = self.controller.listar_filmes()
+        else:
+            filmes = self.controller.buscar_por_genero(genero)
 
         for filme in filmes:
-            valor_formatado = f"R$ {filme.valor_locacao:.2f}" if isinstance(filme.valor_locacao, (int, float)) else filme.valor_locacao
             self.tree.insert("", "end", values=(
                 filme.id_filme,
                 filme.titulo,
                 filme.genero,
                 filme.ano,
                 filme.estoque,
-                valor_formatado
+                filme.valor_locacao
             ))
 
         

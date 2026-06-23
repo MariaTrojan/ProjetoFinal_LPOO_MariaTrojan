@@ -89,7 +89,6 @@ class JanelaCadastroLocacao:
 
         texto = self.entry_filme.get().strip()
 
-        # limpa lista
         self.lista_filmes.delete(0, tk.END)
 
         if texto == "":
@@ -98,10 +97,14 @@ class JanelaCadastroLocacao:
         filmes = self.filme_controller.buscar_por_nome(texto)
 
         for filme in filmes:
-            self.lista_filmes.insert(
-            tk.END,
-            f"{filme.id_filme} - {filme.titulo} ({filme.estoque} disponíveis)"
-)
+
+            if filme.estoque == 0:
+                texto_filme = f"{filme.id_filme} - {filme.titulo} SEM ESTOQUE"
+            else:
+                texto_filme = f"{filme.id_filme} - {filme.titulo} ({filme.estoque} disponíveis)"
+
+            self.lista_filmes.insert(tk.END, texto_filme)
+
 
     # =========================
     # ESCOLHER FILME
@@ -117,19 +120,25 @@ class JanelaCadastroLocacao:
 
         partes = valor.split(" - ")
 
-        self.id_filme_selecionado = int(partes[0])
-        
-        # busca o filme para armazenar
-        self.filme_selecionado = self.filme_controller.buscar_por_id(self.id_filme_selecionado)
+        id_filme = int(partes[0])
 
-        # coloca nome no entry
+        filme = self.filme_controller.buscar_por_id(id_filme)
+
+        if filme.estoque <= 0:
+            messagebox.showerror(
+                "Indisponível",
+                "Esse filme está sem estoque"
+            )
+            return
+
+        self.id_filme_selecionado = id_filme
+        self.filme_selecionado = filme
+
         self.entry_filme.delete(0, tk.END)
-        self.entry_filme.insert(0, self.filme_selecionado.titulo)
+        self.entry_filme.insert(0, filme.titulo)
 
-        # limpa sugestões
         self.lista_filmes.delete(0, tk.END)
-        
-        # calcula valor
+
         self.calcular_valor()
 
     # =========================
