@@ -13,6 +13,10 @@ O projeto possui separação entre área do cliente e área administrativa, apli
 
 ---
 
+## Diagrama de Classes
+<img width="1081" height="1010" alt="Diagrama_Locadora_Filmes drawio" src="https://github.com/user-attachments/assets/f2247c73-af2d-402c-bdfc-6fa2bc2e70a7" />
+
+
 ## Funcionalidades
 
 ### Área do Cliente
