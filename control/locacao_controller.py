@@ -1,6 +1,7 @@
 from dao.cliente_dao import ClienteDAO
 from dao.locacao_dao import LocacaoDAO
 from dao.filme_dao import FilmeDAO
+from model import locacao
 from model.locacao import Locacao, StatusLocacao
 from datetime import date
 from strategy.calculo_padrao import CalculoPadrao
@@ -156,4 +157,16 @@ class LocacaoController:
     
     def buscar_por_id(self, id_locacao):
         return self.locacao_dao.buscar_por_id(id_locacao)
+    
+    def cancelar_reserva(self, locacao, id_locacao):
+        try:
+            if locacao.status != StatusLocacao.RESERVADO:
+                return False, "Só é possível cancelar reservas"
+
+            locacao.status = StatusLocacao.CANCELADO
+
+            return self.locacao_dao.atualizar(locacao, id_locacao)
+
+        except Exception as e:
+            return False, f"Erro ao cancelar: {e}"
     

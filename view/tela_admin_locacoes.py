@@ -53,6 +53,12 @@ class TelaAdminLocacoes(tk.Toplevel):
             command=self.devolver
         ).pack(pady=5)
 
+        tk.Button(
+            self,
+            text="Cancelar Reserva",
+            command=self.cancelar
+        ).pack(pady=5)
+
 
     def carregar_dados(self):
 
@@ -142,6 +148,32 @@ class TelaAdminLocacoes(tk.Toplevel):
         locacao = self.controller.buscar_por_id(id_locacao)
 
         sucesso, msg = self.controller.devolver_filme(
+            locacao,
+            id_locacao
+        )
+
+        if sucesso:
+            messagebox.showinfo("Sucesso", msg)
+            self.carregar_dados()
+
+        else:
+            messagebox.showerror("Erro", msg)
+
+    def cancelar(self):
+
+        selecionado = self.tree.selection()
+
+        if not selecionado:
+            messagebox.showerror("Erro", "Selecione uma locação")
+            return
+
+        valores = self.tree.item(selecionado[0])["values"]
+
+        id_locacao = valores[0]
+
+        locacao = self.controller.buscar_por_id(id_locacao)
+
+        sucesso, msg = self.controller.cancelar_reserva(
             locacao,
             id_locacao
         )

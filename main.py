@@ -10,8 +10,7 @@ def abrir_locacao():
     JanelaCadastroLocacao(nova_janela)
 
 def abrir_cliente():
-    nova_janela = tk.Toplevel(root)
-    TelaCadastroCliente(nova_janela)
+    TelaCadastroCliente(root)
 
 def abrir_filmes():
     JanelaListagemFilmes(root)
