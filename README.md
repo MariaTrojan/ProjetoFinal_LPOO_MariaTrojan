@@ -150,6 +150,13 @@ O sistema utiliza PostgreSQL com as seguintes tabelas:
 
 ---
 
+## Dificuldades e Aprendizados
+Durante o desenvolvimento do projeto, uma das maiores dificuldades foi organizar corretamente a arquitetura em camadas (View, Controller, DAO e Model), entendendo a responsabilidade de cada parte e a comunicação entre elas.
+
+Na interface gráfica com Tkinter, foi necessário aprender a organizar melhor as telas, botões, tabelas e a atualização dinâmica das informações exibidas.
+
+Com o projeto, os principais aprendizados foram o uso prático de Programação Orientada a Objetos, integração entre Python e banco de dados, implementação de regras de negócio no Controller, manipulação de SQL no DAO e melhor entendimento sobre organização e estruturação de sistemas maiores.
+
 ## Declaração de Uso de IA
 - [ ] **Nenhuma IA foi utilizada** na elaboração deste código.
 - [x] **Utilizei IA** como ferramenta de apoio.
